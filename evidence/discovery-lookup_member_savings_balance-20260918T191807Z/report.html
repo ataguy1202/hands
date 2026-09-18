@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>discovery-lookup_member_savings_balance-20260918T191807Z</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root { --bg:#fafafa; --fg:#1a1a1a; --mute:#6b6b6b; --line:#e4e4e4; --card:#fff; --ok:#1f7a4d; --bad:#b3261e; --warn:#8a6d00; --acc:#2b4c7e; }
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif }
+header { padding:28px 32px 20px; border-bottom:1px solid var(--line); background:var(--card) }
+header h1 { margin:0 0 6px; font-size:18px; font-weight:600; letter-spacing:-.01em }
+header .sub { color:var(--mute); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px }
+.badge { display:inline-block; padding:2px 8px; border-radius:3px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; margin-left:10px; vertical-align:middle }
+.badge.succeeded, .badge.compiled { background:#e3f3ea; color:var(--ok) }
+.badge.failed, .badge.aborted { background:#fbe9e7; color:var(--bad) }
+.badge.outcome, .badge.escalated { background:#fff4cc; color:var(--warn) }
+.badge.unknown { background:#eee; color:var(--mute) }
+main { max-width:1100px; margin:0 auto; padding:24px 32px 64px }
+.summary { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px 18px; margin-bottom:28px; columns:2; column-gap:32px }
+.kv { display:flex; gap:12px; padding:3px 0; break-inside:avoid }
+.k { color:var(--mute); min-width:120px; flex:0 0 auto; font-size:12px; padding-top:2px }
+.v { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; white-space:pre-wrap; word-break:break-word }
+.ev { display:grid; grid-template-columns:200px 1fr; gap:18px; padding:12px 0; border-top:1px solid var(--line) }
+.ev .meta { display:flex; flex-direction:column; gap:2px }
+.ev .t { font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--mute) }
+.ev .ty { font-weight:600; font-size:13px }
+.ev.decide .ty, .ev.intervention-raised .ty, .ev.recovery .ty { color:var(--acc) }
+.ev.failure .ty, .ev.step-failed .ty, .ev.policy-blocked .ty { color:var(--bad) }
+.ev.outcome .ty, .ev.escalation .ty, .ev.drift .ty { color:var(--warn) }
+.ev .snap { font-size:12px; color:var(--acc); text-decoration:none }
+.shot { display:block; margin-top:10px; max-width:560px }
+.shot img { width:100%; border:1px solid var(--line); border-radius:4px; display:block }
+@media (max-width:720px){ .ev{grid-template-columns:1fr} .summary{columns:1} main{padding:16px} header{padding:20px 16px} }
+</style></head>
+<body>
+<header>
+  <h1>discovery-lookup_member_savings_balance-20260918T191807Z <span class="badge compiled">compiled</span></h1>
+  <div class="sub">discovery run · 40 events · generated 2026-09-18T19:18:56.062Z</div>
+</header>
+<main>
+  <div class="summary"><div class="kv"><span class="k">status</span><span class="v">compiled</span></div><div class="kv"><span class="k">capability</span><span class="v">capabilities/lookup_member_savings_balance.v1.json</span></div><div class="kv"><span class="k">steps</span><span class="v">9</span></div><div class="kv"><span class="k">recoveries</span><span class="v">3</span></div><div class="kv"><span class="k">outcomes</span><span class="v">1</span></div><div class="kv"><span class="k">modelSteps</span><span class="v">10</span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 72601, &quot;output&quot;: 953, &quot;cacheRead&quot;: 23730, &quot;cacheWrite&quot;: 0 }</span></div><div class="kv"><span class="k">escalations</span><span class="v">0</span></div></div>
+  <section class="ev run-started">
+  <div class="meta"><span class="t">+0.00s</span><span class="ty">run.started</span></div>
+  <div class="body"><div class="kv"><span class="k">goal</span><span class="v">Sign on to Meridian CoreSuite, open Member Inquiry, look up the member by member number, and read the member&#39;s name and the Current Balance of the S01 Regular Savings share from the Share Accounts table.</span></div><div class="kv"><span class="k">entry</span><span class="v">http://localhost:4100/login</span></div><div class="kv"><span class="k">model</span><span class="v">openrouter:anthropic/claude-opus-5</span></div><div class="kv"><span class="k">inputs</span><span class="v">{ &quot;memberId&quot;: &quot;10042&quot; }</span></div><div class="kv"><span class="k">policy</span><span class="v">meridian-coresuite</span></div></div>
+</section>
+<section class="ev navigate">
+  <div class="meta"><span class="t">+0.17s</span><span class="ty">navigate</span></div>
+  <div class="body"><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/login</span></div><div class="kv"><span class="k">why</span><span class="v">entry point</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+0.20s</span><span class="ty">observe</span><a class="snap" href="snapshots/02-step-1.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">1</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/login</span></div><div class="kv"><span class="k">nodes</span><span class="v">9</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/01-step-1.png" target="_blank"><img src="steps/01-step-1.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+5.09s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">1</span></div><div class="kv"><span class="k">tool</span><span class="v">type</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e3&quot;, &quot;secret&quot;: &quot;MERIDIAN_USER&quot;, &quot;note&quot;: &quot;Operator ID&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 4111, &quot;output&quot;: 101, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+5.09s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">1</span></div><div class="kv"><span class="k">action</span><span class="v">type</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+5.29s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">1</span></div><div class="kv"><span class="k">action</span><span class="v">type</span></div><div class="kv"><span class="k">ref</span><span class="v">e3</span></div><div class="kv"><span class="k">control</span><span class="v">textbox &quot;Operator ID&quot;</span></div><div class="kv"><span class="k">value</span><span class="v">{secret MERIDIAN_USER}</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/login</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+5.32s</span><span class="ty">observe</span><a class="snap" href="snapshots/04-step-2.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">2</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/login</span></div><div class="kv"><span class="k">nodes</span><span class="v">9</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/03-step-2.png" target="_blank"><img src="steps/03-step-2.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+8.90s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">2</span></div><div class="kv"><span class="k">tool</span><span class="v">type</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e5&quot;, &quot;secret&quot;: &quot;MERIDIAN_PASSWORD&quot;, &quot;note&quot;: &quot;Password&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 5605, &quot;output&quot;: 102, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+8.90s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">2</span></div><div class="kv"><span class="k">action</span><span class="v">type</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+9.10s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">2</span></div><div class="kv"><span class="k">action</span><span class="v">type</span></div><div class="kv"><span class="k">ref</span><span class="v">e5</span></div><div class="kv"><span class="k">control</span><span class="v">textbox &quot;Password&quot;</span></div><div class="kv"><span class="k">value</span><span class="v">{secret MERIDIAN_PASSWORD}</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/login</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+9.13s</span><span class="ty">observe</span><a class="snap" href="snapshots/06-step-3.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">3</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/login</span></div><div class="kv"><span class="k">nodes</span><span class="v">9</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/05-step-3.png" target="_blank"><img src="steps/05-step-3.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+13.81s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">3</span></div><div class="kv"><span class="k">tool</span><span class="v">click</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e8&quot;, &quot;note&quot;: &quot;Sign on&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 5996, &quot;output&quot;: 69, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+13.81s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">3</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+14.49s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">3</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">ref</span><span class="v">e8</span></div><div class="kv"><span class="k">control</span><span class="v">button &quot;Sign On&quot;</span></div><div class="kv"><span class="k">value</span><span class="v"></span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+14.52s</span><span class="ty">observe</span><a class="snap" href="snapshots/08-step-4.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">4</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">10</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/07-step-4.png" target="_blank"><img src="steps/07-step-4.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+18.30s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">4</span></div><div class="kv"><span class="k">tool</span><span class="v">click</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e5&quot;, &quot;note&quot;: &quot;Open Member Inquiry&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 6386, &quot;output&quot;: 74, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+18.30s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">4</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+19.00s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">4</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">ref</span><span class="v">e5</span></div><div class="kv"><span class="k">control</span><span class="v">link &quot;Member Inquiry&quot;</span></div><div class="kv"><span class="k">value</span><span class="v"></span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+19.06s</span><span class="ty">observe</span><a class="snap" href="snapshots/10-step-5.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">5</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">12</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/09-step-5.png" target="_blank"><img src="steps/09-step-5.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+22.21s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">5</span></div><div class="kv"><span class="k">tool</span><span class="v">click</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e12&quot;, &quot;note&quot;: &quot;Dismiss notice&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 6848, &quot;output&quot;: 72, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+22.21s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">5</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+22.89s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">5</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">ref</span><span class="v">e12</span></div><div class="kv"><span class="k">control</span><span class="v">button &quot;Continue&quot;</span></div><div class="kv"><span class="k">value</span><span class="v"></span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+22.93s</span><span class="ty">observe</span><a class="snap" href="snapshots/12-step-6.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">6</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">16</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/11-step-6.png" target="_blank"><img src="steps/11-step-6.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+26.10s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">6</span></div><div class="kv"><span class="k">tool</span><span class="v">type</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e12&quot;, &quot;param&quot;: &quot;memberId&quot;, &quot;note&quot;: &quot;Enter member number&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 7327, &quot;output&quot;: 93, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+26.10s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">6</span></div><div class="kv"><span class="k">action</span><span class="v">type</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+26.75s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">6</span></div><div class="kv"><span class="k">action</span><span class="v">type</span></div><div class="kv"><span class="k">ref</span><span class="v">e12</span></div><div class="kv"><span class="k">control</span><span class="v">textbox &quot;Member Number&quot;</span></div><div class="kv"><span class="k">value</span><span class="v">{param memberId}</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+26.78s</span><span class="ty">observe</span><a class="snap" href="snapshots/14-step-7.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">7</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">16</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/13-step-7.png" target="_blank"><img src="steps/13-step-7.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+29.91s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">7</span></div><div class="kv"><span class="k">tool</span><span class="v">click</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e15&quot;, &quot;note&quot;: &quot;Search&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 7833, &quot;output&quot;: 67, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev policy">
+  <div class="meta"><span class="t">+29.91s</span><span class="ty">policy</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">7</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">allowed</span><span class="v">true</span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">reason</span><span class="v"></span></div></div>
+</section>
+<section class="ev act">
+  <div class="meta"><span class="t">+30.58s</span><span class="ty">act</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">7</span></div><div class="kv"><span class="k">action</span><span class="v">click</span></div><div class="kv"><span class="k">ref</span><span class="v">e15</span></div><div class="kv"><span class="k">control</span><span class="v">button &quot;Search&quot;</span></div><div class="kv"><span class="k">value</span><span class="v"></span></div><div class="kv"><span class="k">risk</span><span class="v">safe</span></div><div class="kv"><span class="k">dialogOpened</span><span class="v"></span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+30.60s</span><span class="ty">observe</span><a class="snap" href="snapshots/16-step-8.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">8</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">41</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/15-step-8.png" target="_blank"><img src="steps/15-step-8.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+34.57s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">8</span></div><div class="kv"><span class="k">tool</span><span class="v">extract</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e15&quot;, &quot;output&quot;: &quot;memberName&quot;, &quot;parse&quot;: &quot;text&quot;, &quot;note&quot;: &quot;Member name&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 8600, &quot;output&quot;: 114, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev extract">
+  <div class="meta"><span class="t">+34.57s</span><span class="ty">extract</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">8</span></div><div class="kv"><span class="k">output</span><span class="v">memberName</span></div><div class="kv"><span class="k">parse</span><span class="v">text</span></div><div class="kv"><span class="k">value</span><span class="v">Okafor, Margaret A</span></div><div class="kv"><span class="k">target</span><span class="v">cell &quot;Okafor, Margaret A&quot; [3 strategies]</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+34.60s</span><span class="ty">observe</span><a class="snap" href="snapshots/18-step-9.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">9</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">41</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/17-step-9.png" target="_blank"><img src="steps/17-step-9.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+38.33s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">9</span></div><div class="kv"><span class="k">tool</span><span class="v">extract</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;ref&quot;: &quot;e27&quot;, &quot;output&quot;: &quot;savingsBalance&quot;, &quot;parse&quot;: &quot;money&quot;, &quot;note&quot;: &quot;S01 current balance&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 9431, &quot;output&quot;: 120, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev extract">
+  <div class="meta"><span class="t">+38.33s</span><span class="ty">extract</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">9</span></div><div class="kv"><span class="k">output</span><span class="v">savingsBalance</span></div><div class="kv"><span class="k">parse</span><span class="v">money</span></div><div class="kv"><span class="k">value</span><span class="v">4212.18</span></div><div class="kv"><span class="k">target</span><span class="v">cell &quot;$4,212.18&quot; [2 strategies]</span></div></div>
+</section>
+<section class="ev observe">
+  <div class="meta"><span class="t">+38.37s</span><span class="ty">observe</span><a class="snap" href="snapshots/20-step-10.txt" target="_blank">perceived tree</a></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">10</span></div><div class="kv"><span class="k">url</span><span class="v">http://localhost:4100/</span></div><div class="kv"><span class="k">nodes</span><span class="v">41</span></div><div class="kv"><span class="k">dialog</span><span class="v"></span></div><a class="shot" href="steps/19-step-10.png" target="_blank"><img src="steps/19-step-10.png" alt="screenshot" loading="lazy"></a></div>
+</section>
+<section class="ev decide">
+  <div class="meta"><span class="t">+48.27s</span><span class="ty">decide</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">10</span></div><div class="kv"><span class="k">tool</span><span class="v">done</span></div><div class="kv"><span class="k">input</span><span class="v">{ &quot;checkpointText&quot;: &quot;Member Detail&quot;, &quot;outcomes&quot;: [ { &quot;code&quot;: &quot;NOT_FOUND&quot;, &quot;description&quot;: &quot;No member matches the number entered&quot;, &quot;textPattern&quot;: &quot;No member found&quot; } ], &quot;note&quot;: &quot;Both outputs read&quot; }</span></div><div class="kv"><span class="k">reasoning</span><span class="v"></span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 10464, &quot;output&quot;: 141, &quot;cacheRead&quot;: 2373, &quot;cacheWrite&quot;: 0 }</span></div></div>
+</section>
+<section class="ev done">
+  <div class="meta"><span class="t">+48.27s</span><span class="ty">done</span></div>
+  <div class="body"><div class="kv"><span class="k">step</span><span class="v">10</span></div><div class="kv"><span class="k">checkpointText</span><span class="v">Member Detail</span></div><div class="kv"><span class="k">outcomes</span><span class="v">[ { &quot;code&quot;: &quot;NOT_FOUND&quot;, &quot;description&quot;: &quot;No member matches the number entered&quot;, &quot;textPattern&quot;: &quot;No member found&quot; } ]</span></div></div>
+</section>
+<section class="ev run-finished">
+  <div class="meta"><span class="t">+48.29s</span><span class="ty">run.finished</span></div>
+  <div class="body"><div class="kv"><span class="k">status</span><span class="v">compiled</span></div><div class="kv"><span class="k">capability</span><span class="v">capabilities/lookup_member_savings_balance.v1.json</span></div><div class="kv"><span class="k">steps</span><span class="v">9</span></div><div class="kv"><span class="k">recoveries</span><span class="v">3</span></div><div class="kv"><span class="k">outcomes</span><span class="v">1</span></div><div class="kv"><span class="k">modelSteps</span><span class="v">10</span></div><div class="kv"><span class="k">usage</span><span class="v">{ &quot;input&quot;: 72601, &quot;output&quot;: 953, &quot;cacheRead&quot;: 23730, &quot;cacheWrite&quot;: 0 }</span></div><div class="kv"><span class="k">escalations</span><span class="v">0</span></div><div class="kv"><span class="k">durationMs</span><span class="v">48431</span></div></div>
+</section>
+</main>
+</body></html>

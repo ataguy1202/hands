@@ -1,0 +1,27 @@
+{
+  "runId": "replay-lookup_member_savings_balance-verify-20260918T191946Z",
+  "capability": {
+    "id": "cap_lookup_member_savings_balance",
+    "name": "lookup_member_savings_balance",
+    "version": 1
+  },
+  "recoveries": [
+    {
+      "id": "dismiss_system_notice",
+      "atStep": "s5",
+      "attempt": 1
+    }
+  ],
+  "drift": [],
+  "escalations": [],
+  "stepsCompleted": 9,
+  "status": "succeeded",
+  "outputs": {
+    "memberName": "Okafor, Margaret A",
+    "savingsBalance": 4212.18
+  },
+  "startedAt": "2026-09-18T19:19:46.389Z",
+  "finishedAt": "2026-09-18T19:19:50.361Z",
+  "durationMs": 3972,
+  "evidenceDir": "evidence/replay-lookup_member_savings_balance-verify-20260918T191946Z"
+}

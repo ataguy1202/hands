@@ -61,8 +61,9 @@ export class OperatorConsole {
       return res.end(png);
     }
     if ((mm = m(/^\/evidence\/(.+)$/))) {
-      const file = path.join(this.evidenceDir, mm[1]!);
-      if (!file.startsWith(path.resolve(this.evidenceDir)) || !fs.existsSync(file)) return json(res, 404, { error: "not found" });
+      const root = path.resolve(this.evidenceDir);
+      const file = path.resolve(root, mm[1]!);
+      if (!file.startsWith(root + path.sep) || !fs.existsSync(file)) return json(res, 404, { error: "not found" });
       res.writeHead(200, { "content-type": file.endsWith(".png") ? "image/png" : "text/plain" });
       return res.end(fs.readFileSync(file));
     }

@@ -1,0 +1,10 @@
+frame (top): http://localhost:4100/login
+  - cell "Meridian CoreSuite - Sign On" [e1]
+  - cell "Operator ID" [e2]
+  - textbox "Operator ID" [e3] (name=uid; value="operator")
+  - cell "Password" [e4]
+  - textbox "Password" [e5] (type=password; name=pwd)
+  - cell "Branch" [e6]
+  - combobox "Branch" [e7] (name=br; value="01 - Main Office"; options: "01 - Main Office", "02 - Westgate")
+  - button "Sign On" [e8]
+  - text "Meridian CoreSuite v7.2.14 Unauthorized access is prohibited." [e9]

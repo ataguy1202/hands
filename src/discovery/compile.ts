@@ -80,9 +80,13 @@ export function compile(spec: GoalSpec, trace: Trace, provenance: { runId: strin
   }
 
   const success: Condition = spec.success ?? { kind: "text", pattern: escapeRx(trace.done.checkpointText) };
+  // Model-proposed outcomes are merged unless the analyst already declared one that
+  // watches for the same text. The declared one is the reviewed one.
   const outcomes = { ...spec.outcomes };
+  const plain = (rx: string) => rx.replace(/\\(.)/g, "$1").toLowerCase();
   for (const o of trace.done.outcomes ?? []) {
-    if (!(o.code in outcomes)) outcomes[o.code] = { description: o.description, detect: { kind: "text", pattern: o.textPattern } };
+    const overlaps = Object.values(outcomes).some((x) => x.detect.kind === "text" && (plain(x.detect.pattern).includes(plain(o.textPattern)) || plain(o.textPattern).includes(plain(x.detect.pattern))));
+    if (!(o.code in outcomes) && !overlaps) outcomes[o.code] = { description: o.description, detect: { kind: "text", pattern: o.textPattern } };
   }
   const escalations = [...spec.escalations];
   for (const e of trace.escalations) {

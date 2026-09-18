@@ -1,0 +1,499 @@
+{
+  "schemaVersion": "1.0",
+  "id": "cap_lookup_member_savings_balance",
+  "name": "lookup_member_savings_balance",
+  "version": 1,
+  "status": "approved",
+  "description": "Look up a member by member number in Meridian CoreSuite and read the current balance of their Regular Savings share (S01).",
+  "app": {
+    "id": "meridian-coresuite",
+    "surface": "legacy-web",
+    "entry": "http://localhost:4100/login"
+  },
+  "inputs": {
+    "memberId": {
+      "type": "string",
+      "description": "Member number, 5 digits",
+      "required": true,
+      "pattern": "^\\d{5}$",
+      "example": "10042",
+      "sensitive": false
+    }
+  },
+  "outputs": {
+    "memberName": {
+      "type": "string",
+      "description": "Member name as shown on the Member Detail screen (Last, First M)"
+    },
+    "savingsBalance": {
+      "type": "money",
+      "description": "Current Balance of the S01 Regular Savings share, in USD"
+    }
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "note": "open the application",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Meridian CoreSuite - Sign On",
+        "frame": []
+      },
+      "timeoutMs": 8000,
+      "action": "navigate",
+      "url": "http://localhost:4100/login"
+    },
+    {
+      "id": "s2",
+      "note": "Operator ID",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Operator ID\"",
+        "frame": [],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Operator ID"
+          },
+          {
+            "kind": "anchor",
+            "text": "Operator ID",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "uid",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "text",
+          "role": "textbox",
+          "name": "Operator ID"
+        }
+      },
+      "value": {
+        "kind": "secret",
+        "name": "MERIDIAN_USER"
+      }
+    },
+    {
+      "id": "s3",
+      "note": "Password",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Password\"",
+        "frame": [],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Password"
+          },
+          {
+            "kind": "anchor",
+            "text": "Password",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "pwd",
+              "type": "password"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "password",
+          "role": "textbox",
+          "name": "Password"
+        }
+      },
+      "value": {
+        "kind": "secret",
+        "name": "MERIDIAN_PASSWORD"
+      }
+    },
+    {
+      "id": "s4",
+      "note": "Sign on",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Welcome",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "button \"Sign On\"",
+        "frame": [],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Sign On"
+          },
+          {
+            "kind": "text",
+            "text": "Sign On",
+            "tag": "input"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(4) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "submit",
+          "role": "button",
+          "name": "Sign On"
+        }
+      }
+    },
+    {
+      "id": "s5",
+      "note": "Open Member Inquiry",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Member Inquiry",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "link \"Member Inquiry\"",
+        "frame": [
+          "nav"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "link",
+            "name": "Member Inquiry"
+          },
+          {
+            "kind": "text",
+            "text": "Member Inquiry",
+            "tag": "a"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(3) > td > a"
+          }
+        ],
+        "fingerprint": {
+          "tag": "a",
+          "role": "link",
+          "name": "Member Inquiry"
+        }
+      }
+    },
+    {
+      "id": "s6",
+      "note": "Enter member number",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Member Number\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Member Number"
+          },
+          {
+            "kind": "anchor",
+            "text": "Member Number",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "mbrno",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "text",
+          "role": "textbox",
+          "name": "Member Number"
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "memberId"
+      }
+    },
+    {
+      "id": "s7",
+      "note": "Search",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Member Detail",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "button \"Search\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Search"
+          },
+          {
+            "kind": "text",
+            "text": "Search",
+            "tag": "input"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input:nth-of-type(1)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "submit",
+          "role": "button",
+          "name": "Search"
+        }
+      }
+    },
+    {
+      "id": "s8",
+      "note": "read memberName",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "extract",
+      "target": {
+        "describe": "cell \"Okafor, Margaret A\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "anchor",
+            "text": "Name",
+            "tag": "td"
+          },
+          {
+            "kind": "text",
+            "text": "Okafor, Margaret A",
+            "tag": "td"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > td:nth-of-type(2)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "td",
+          "role": "cell"
+        }
+      },
+      "output": "memberName",
+      "parse": "text"
+    },
+    {
+      "id": "s9",
+      "note": "read savingsBalance",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "extract",
+      "target": {
+        "describe": "cell \"$4,212.18\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "cell",
+            "column": "Current Balance",
+            "rowContains": "S01"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td:nth-of-type(3)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "td",
+          "role": "cell"
+        }
+      },
+      "output": "savingsBalance",
+      "parse": "money"
+    }
+  ],
+  "success": {
+    "kind": "text",
+    "pattern": "Member Detail"
+  },
+  "outcomes": {
+    "MEMBER_NOT_FOUND": {
+      "description": "No member exists with that member number.",
+      "detect": {
+        "kind": "text",
+        "pattern": "No member found for"
+      }
+    }
+  },
+  "recoveries": [
+    {
+      "id": "session_expired",
+      "description": "The operator session timed out; sign on again and start over.",
+      "detect": {
+        "kind": "text",
+        "pattern": "session has expired"
+      },
+      "action": {
+        "kind": "restart"
+      },
+      "maxAttempts": 1
+    },
+    {
+      "id": "app_error_retry",
+      "description": "The core returned an application error page that says to try again. Nothing was posted, so start over.",
+      "detect": {
+        "kind": "text",
+        "pattern": "An unexpected error occurred"
+      },
+      "action": {
+        "kind": "restart"
+      },
+      "maxAttempts": 2
+    },
+    {
+      "id": "dismiss_system_notice",
+      "description": "Dismiss notice",
+      "detect": {
+        "kind": "visible",
+        "target": {
+          "describe": "dialog \"System Notice\"",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "dialog",
+              "name": "System Notice"
+            },
+            {
+              "kind": "css",
+              "selector": "body > table"
+            }
+          ],
+          "fingerprint": {
+            "tag": "table",
+            "role": "dialog",
+            "name": "System Notice"
+          }
+        }
+      },
+      "action": {
+        "kind": "click",
+        "target": {
+          "describe": "button \"Continue\"",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Continue"
+            },
+            {
+              "kind": "text",
+              "text": "Continue",
+              "tag": "input"
+            },
+            {
+              "kind": "css",
+              "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > div > input"
+            }
+          ],
+          "fingerprint": {
+            "tag": "input",
+            "type": "submit",
+            "role": "button",
+            "name": "Continue"
+          }
+        }
+      },
+      "maxAttempts": 2
+    }
+  ],
+  "escalations": [
+    {
+      "id": "permission_denied",
+      "description": "The operator's role is not authorized for this function; a supervisor has to act.",
+      "detect": {
+        "kind": "text",
+        "pattern": "Permission Denied|supervisor override is required"
+      }
+    }
+  ],
+  "policy": {
+    "effect": "read_only",
+    "irreversibleSteps": []
+  },
+  "provenance": {
+    "discoveredAt": "2026-09-18T19:18:56.049Z",
+    "discoveryRunId": "discovery-lookup_member_savings_balance-20260918T191807Z",
+    "model": "openrouter:anthropic/claude-opus-5",
+    "surfaceDriver": "playwright-chromium",
+    "evidence": "evidence/discovery-lookup_member_savings_balance-20260918T191807Z"
+  },
+  "stats": {
+    "replays": 14,
+    "succeeded": 13,
+    "lastReplayAt": "2026-09-18T19:25:07.451Z"
+  }
+}

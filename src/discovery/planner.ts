@@ -5,13 +5,11 @@
  * tools; the loop validates the pick against policy and dispatches it. That
  * keeps the guardrails in code, and it makes every decision recordable.
  */
-import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { createModelClient, type ModelClient, type ToolSpec, type Turn, type Usage, type UserPart } from "./llm.js";
 import type { Observation } from "../surface/types.js";
 import type { Redactor } from "../policy/redact.js";
 import type { GoalSpec } from "./goal.js";
-
-export const DEFAULT_MODEL = "claude-opus-5";
 
 const Ref = z.string().regex(/^e\d+$/);
 const Note = z.string().min(1).max(300);
@@ -35,7 +33,7 @@ export const Decision = z.discriminatedUnion("tool", [
 ]);
 export type Decision = z.infer<typeof Decision>;
 
-const tools: Anthropic.Tool[] = [
+const toolSpecs: ToolSpec[] = [
   tool("click", "Click a control (link, button, checkbox, radio, cell) by its ref.", {
     ref: { type: "string", description: "The ref shown in brackets in the tree, e.g. e12" },
     note: { type: "string", description: "Why, in one short sentence" },
@@ -70,8 +68,8 @@ const tools: Anthropic.Tool[] = [
   tool("escalate", "Stop and hand the session to a human operator. Use for permission denials, unexpected states you cannot safely resolve, or anything that looks like it needs judgement about money or identity.", { reason: { type: "string" } }, ["reason"]),
 ];
 
-function tool(name: string, description: string, properties: Record<string, unknown>, required: string[]): Anthropic.Tool {
-  return { name, description, input_schema: { type: "object", properties, required, additionalProperties: false } };
+function tool(name: string, description: string, properties: Record<string, unknown>, required: string[]): ToolSpec {
+  return { name, description, inputSchema: { type: "object", properties, required, additionalProperties: false } };
 }
 
 function systemPrompt(): string {
@@ -114,96 +112,71 @@ export type PlannerTurn = {
   decision: Decision;
   toolUseId: string;
   reasoning?: string;
-  usage: { input: number; output: number; cacheRead: number; cacheWrite: number };
+  usage: Usage;
 };
 
 export class Planner {
-  private readonly client = new Anthropic();
-  private readonly messages: Anthropic.MessageParam[] = [];
+  private readonly turns: Turn[] = [];
   private pendingToolUse?: string;
-  readonly model: string;
+  readonly client: ModelClient;
   readonly transcript: unknown[] = [];
 
   constructor(private readonly spec: GoalSpec, private readonly redactor: Redactor, opts: { model?: string; vision?: boolean } = {}) {
-    this.model = opts.model ?? process.env.HANDS_MODEL ?? DEFAULT_MODEL;
+    this.client = createModelClient({ model: opts.model });
     this.vision = opts.vision ?? true;
   }
   private readonly vision: boolean;
+  get model() { return `${this.client.provider}:${this.client.model}`; }
 
   /**
    * Feed the result of the previous action (if any) plus the new observation,
    * and get the next decision. Retries once if the model replies without a tool call.
    */
   async next(observation: Observation, lastResult?: { text: string; isError?: boolean }): Promise<PlannerTurn> {
-    const screen = this.observationBlocks(observation);
+    const screen = this.observationParts(observation);
     if (this.pendingToolUse) {
-      const content: Anthropic.ToolResultBlockParam["content"] = [{ type: "text", text: lastResult?.text ?? "ok" }, ...screen];
-      this.messages.push({ role: "user", content: [{ type: "tool_result", tool_use_id: this.pendingToolUse, content, is_error: lastResult?.isError ?? false }] });
+      this.turns.push({ role: "user", parts: [{ type: "tool_result", id: this.pendingToolUse, text: lastResult?.text ?? "ok", isError: lastResult?.isError ?? false }, ...screen] });
     } else {
-      this.messages.push({ role: "user", content: [{ type: "text", text: goalPrompt(this.spec) }, ...screen] });
+      this.turns.push({ role: "user", parts: [{ type: "text", text: goalPrompt(this.spec) }, ...screen] });
     }
     this.trimImages();
 
     for (let attempt = 0; attempt < 2; attempt++) {
-      const response = await this.client.messages.create({
-        model: this.model,
-        max_tokens: 4000,
-        system: [{ type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } }],
-        tools,
-        tool_choice: { type: "auto", disable_parallel_tool_use: true },
-        thinking: { type: "adaptive", display: "summarized" },
-        cache_control: { type: "ephemeral" },
-        messages: this.messages,
-      });
-      this.messages.push({ role: "assistant", content: response.content });
-      this.transcript.push(this.redactor.value({ at: new Date().toISOString(), stop: response.stop_reason, content: response.content, usage: response.usage }));
+      const c = await this.client.complete(systemPrompt(), this.turns, toolSpecs);
+      this.turns.push({ role: "assistant", text: c.text || undefined, reasoning: c.reasoning, toolUse: c.toolUse, raw: c.raw });
+      this.transcript.push(this.redactor.value({ at: new Date().toISOString(), stop: c.stopReason, reasoning: c.reasoning, text: c.text, toolUse: c.toolUse, usage: c.usage }));
 
-      const use = response.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-      const reasoning = response.content.filter((b): b is Anthropic.ThinkingBlock => b.type === "thinking").map((b) => b.thinking).join("\n").trim()
-        || response.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("\n").trim();
-      const usage = {
-        input: response.usage.input_tokens, output: response.usage.output_tokens,
-        cacheRead: response.usage.cache_read_input_tokens ?? 0, cacheWrite: response.usage.cache_creation_input_tokens ?? 0,
-      };
-      if (use) {
-        const parsed = Decision.safeParse({ tool: use.name, ...(use.input as object) });
+      if (c.toolUse) {
+        const parsed = Decision.safeParse({ tool: c.toolUse.name, ...(c.toolUse.input as object) });
         if (parsed.success) {
-          this.pendingToolUse = use.id;
-          return { decision: parsed.data, toolUseId: use.id, reasoning: reasoning || undefined, usage };
+          this.pendingToolUse = c.toolUse.id;
+          return { decision: parsed.data, toolUseId: c.toolUse.id, reasoning: c.reasoning || c.text || undefined, usage: c.usage };
         }
-        this.messages.push({ role: "user", content: [{ type: "tool_result", tool_use_id: use.id, is_error: true, content: `Invalid arguments: ${parsed.error.issues.map((i) => i.message).join("; ")}. Call one tool with valid arguments.` }] });
+        this.turns.push({ role: "user", parts: [{ type: "tool_result", id: c.toolUse.id, isError: true, text: `Invalid arguments: ${parsed.error.issues.map((i) => i.message).join("; ")}. Call one tool with valid arguments.` }] });
         continue;
       }
-      if (response.stop_reason === "refusal") throw new Error("the model refused to continue");
-      this.messages.push({ role: "user", content: "You must call exactly one tool this turn." });
+      if (c.stopReason === "refusal") throw new Error("the model refused to continue");
+      this.turns.push({ role: "user", parts: [{ type: "text", text: "You must call exactly one tool this turn." }] });
     }
     throw new Error("the model did not produce a valid tool call in two attempts");
   }
 
-  private observationBlocks(o: Observation): (Anthropic.TextBlockParam | Anthropic.ImageBlockParam)[] {
-    const blocks: (Anthropic.TextBlockParam | Anthropic.ImageBlockParam)[] = [
-      { type: "text", text: `Current screen (${this.redactor.text(o.url)}):\n${this.redactor.text(o.tree)}` },
-    ];
-    if (this.vision && o.screenshot?.length) {
-      blocks.push({ type: "image", source: { type: "base64", media_type: "image/png", data: o.screenshot.toString("base64") } });
-    }
-    return blocks;
+  private observationParts(o: Observation): UserPart[] {
+    const parts: UserPart[] = [{ type: "text", text: `Current screen (${this.redactor.text(o.url)}):\n${this.redactor.text(o.tree)}` }];
+    if (this.vision && o.screenshot?.length) parts.push({ type: "image", png: o.screenshot });
+    return parts;
   }
 
   /** Keep screenshots only for the two most recent turns; older ones cost tokens and add nothing. */
   private trimImages() {
     let kept = 0;
-    for (let i = this.messages.length - 1; i >= 0; i--) {
-      const m = this.messages[i]!;
-      if (m.role !== "user" || typeof m.content === "string") continue;
-      for (const block of m.content) {
-        const inner = block.type === "tool_result" && Array.isArray(block.content) ? block.content : block.type === "image" ? [block] : [];
-        for (let j = 0; j < inner.length; j++) {
-          if (inner[j]!.type !== "image") continue;
-          if (kept < 2) { kept++; continue; }
-          inner[j] = { type: "text", text: "[earlier screenshot omitted]" } as Anthropic.TextBlockParam;
-        }
-        if (block.type === "image" && inner[0]?.type === "text") (m.content as unknown[])[m.content.indexOf(block)] = inner[0];
+    for (let i = this.turns.length - 1; i >= 0; i--) {
+      const t = this.turns[i]!;
+      if (t.role !== "user") continue;
+      for (let j = 0; j < t.parts.length; j++) {
+        if (t.parts[j]!.type !== "image") continue;
+        if (kept < 2) { kept++; continue; }
+        t.parts[j] = { type: "text", text: "[earlier screenshot omitted]" };
       }
     }
   }

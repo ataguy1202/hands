@@ -17,7 +17,7 @@ export function renderReport(input: { id: string; kind: RunKind; events: RunEven
 
   const rows = events.map((e) => {
     const dt = ((Date.parse(e.at) - t0) / 1000).toFixed(2);
-    const fields = Object.entries(e).filter(([k]) => !HIDDEN.has(k));
+    const fields = Object.entries(e).filter(([k, v]) => !HIDDEN.has(k) && v !== undefined && v !== null && v !== "");
     const detail = fields.map(([k, v]) => `<div class="kv"><span class="k">${esc(k)}</span><span class="v">${fmt(v)}</span></div>`).join("");
     const shot = e.screenshot ? `<a class="shot" href="${esc(e.screenshot)}" target="_blank"><img src="${esc(e.screenshot)}" alt="screenshot" loading="lazy"></a>` : "";
     const snap = e.snapshot ? `<a class="snap" href="${esc(e.snapshot)}" target="_blank">perceived tree</a>` : "";
@@ -27,7 +27,7 @@ export function renderReport(input: { id: string; kind: RunKind; events: RunEven
 </section>`;
   }).join("\n");
 
-  const sum = Object.entries(summary).map(([k, v]) => `<div class="kv"><span class="k">${esc(k)}</span><span class="v">${fmt(v)}</span></div>`).join("");
+  const sum = Object.entries(summary).filter(([, v]) => v !== undefined && v !== null && v !== "").map(([k, v]) => `<div class="kv"><span class="k">${esc(k)}</span><span class="v">${fmt(v)}</span></div>`).join("");
 
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>${esc(id)}</title>

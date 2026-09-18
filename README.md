@@ -10,7 +10,20 @@ goal ──► discovery (LLM drives the UI) ──► capability.json ──►
                                                           stuck? ──► operator takes the live session ──► resumes
 ```
 
-The design write-up is in [REPORT.md](REPORT.md). Recorded runs, with logs and screenshots, are in [evidence/](evidence/README.md).
+The design write-up is in [REPORT.md](REPORT.md). Recorded runs, with logs and screenshots, are indexed in [evidence/README.md](evidence/README.md).
+
+<table><tr>
+<td width="50%"><img src="docs/operator-console.png" alt="Operator console during a takeover: the paused run, the live session, remote hands, and the hand-back options"><br><sub>A replay hit a dialog it did not know. The operator took the live session, cleared it, and handed back.</sub></td>
+<td width="50%"><img src="docs/run-report.png" alt="Run report: the structured event log rendered with screenshots"><br><sub>Every run writes a JSONL log, screenshots, the perceived tree, and this report.</sub></td>
+</tr></table>
+
+## What the recorded runs show
+
+Two capabilities were discovered by Claude Opus 5 against the mock core and then replayed without a model:
+
+- `lookup_member_savings_balance` (read only): discovered in 10 model turns, replayed for other members, for a member that does not exist (a `MEMBER_NOT_FOUND` outcome), through a session expiry and an application error (both recovered by restarting), through an unknown compliance dialog (escalated; an operator cleared it in the live session and handed back), and three times in a row for a stability check.
+- `open_holiday_club_sub_account` (mutating): discovered in 16 model turns with one approval for the irreversible "Open Account" step, replayed with approval, with a deposit the core rejects (a `DEPOSIT_BELOW_MINIMUM` outcome), with the approval denied, and for a restricted member where a supervisor entered an override in the live session before the run continued.
+- `bin/hands agent` let a model answer a two-part question by calling the first capability twice.
 
 ## What is in the box
 
@@ -25,7 +38,8 @@ The design write-up is in [REPORT.md](REPORT.md). Recorded runs, with logs and s
 | `src/session/` | Control lease, interventions, and the operator console. |
 | `src/evidence/` | Structured run log, screenshots, HTML report. |
 | `src/agent/` | Capabilities as tool definitions an agent can call. |
-| `capabilities/` | Saved artifacts. |
+| `capabilities/` | The two saved artifacts, both approved. |
+| `scripts/` | A scripted operator for demos and CI, and the evidence indexer. |
 | `goals/`, `policies/` | The demo goal specs and the policy for the target. |
 
 ## Setup
@@ -35,8 +49,10 @@ Requires Node 22.9 or newer.
 ```sh
 npm install
 npx playwright install chromium
-cp .env.example .env        # add ANTHROPIC_API_KEY for discovery; replay never needs it
+cp .env.example .env        # add a model key for discovery; replay never needs one
 ```
+
+Discovery talks to Claude through one of two providers behind the same seam (`src/discovery/llm.ts`): the Anthropic API (`ANTHROPIC_API_KEY`) or OpenRouter (`OPENROUTER_API_KEY`, model `anthropic/claude-opus-5`). Whichever key is present is used; `HANDS_LLM` and `HANDS_MODEL` override. The recorded evidence was produced through OpenRouter.
 
 `.env` is loaded by `bin/hands` through Node's own `--env-file-if-exists`. Nothing else reads it and it is git-ignored.
 
@@ -51,7 +67,7 @@ npm run target               # Meridian CoreSuite on http://localhost:4100 (oper
 Then, in another:
 
 ```sh
-# 1. Discover: the model drives the UI to the goal. Uses the API key. One run, a few dollars at most.
+# 1. Discover: the model drives the UI to the goal. Uses the model key. The recorded runs cost well under a dollar each.
 bin/hands discover goals/lookup_member_savings_balance.json --headed
 
 # 2. Verify: replay the compiled capability with the discovery inputs, no model involved.
@@ -66,7 +82,15 @@ bin/hands approve lookup_member_savings_balance
 bin/hands invoke lookup_member_savings_balance --args '{"memberId":"20015"}'
 ```
 
-Every run prints its evidence folder and the operator console URL (default `http://localhost:4700`). Open the console when a run says it is waiting on an intervention.
+Every run prints its evidence folder and the operator console URL (default `http://localhost:4700`). Open the console when a run says it is waiting on an intervention, or let a scripted operator stand in for you:
+
+```sh
+npx tsx scripts/operator.ts approve        # approve irreversible steps as they come up
+npx tsx scripts/operator.ts attest         # clear the compliance dialog in the live session and hand back
+npx tsx scripts/operator.ts supervisor --pin 2468
+```
+
+The script only talks to the console's JSON API, the same one the page uses.
 
 ### Seeing the runtime conditions
 
@@ -90,6 +114,10 @@ bin/hands replay open_holiday_club_sub_account --input memberId=10042 --input ni
 ```
 
 "Open Account" is classified irreversible by policy. Discovery and replay both pause for an approval in the operator console before pressing it; the `confirm()` it raises is answered as part of the step.
+
+### The target itself
+
+<img src="docs/target.png" width="520" alt="Meridian CoreSuite sign-on screen">
 
 ### Other commands
 

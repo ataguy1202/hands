@@ -1,0 +1,21 @@
+{
+  "runId": "replay-lookup_member_savings_balance-bad-input-20260918T192017Z",
+  "capability": {
+    "id": "cap_lookup_member_savings_balance",
+    "name": "lookup_member_savings_balance",
+    "version": 1
+  },
+  "recoveries": [],
+  "drift": [],
+  "escalations": [],
+  "stepsCompleted": 0,
+  "status": "failed",
+  "failure": {
+    "class": "invalid_input",
+    "message": "input \"memberId\" does not match ^\\d{5}$"
+  },
+  "startedAt": "2026-09-18T19:20:17.510Z",
+  "finishedAt": "2026-09-18T19:20:17.510Z",
+  "durationMs": 0,
+  "evidenceDir": "evidence/replay-lookup_member_savings_balance-bad-input-20260918T192017Z"
+}

@@ -5,7 +5,7 @@
  */
 import { parseArgs } from "node:util";
 import path from "node:path";
-import Anthropic from "@anthropic-ai/sdk";
+import { createModelClient, type Turn } from "./discovery/llm.js";
 import { loadGoal } from "./discovery/goal.js";
 import { Planner } from "./discovery/planner.js";
 import { discover } from "./discovery/loop.js";
@@ -188,24 +188,20 @@ async function cmdAgent(request: string) {
   if (!request) throw new Error('agent needs a request, e.g. hands agent "What is the savings balance for member 10042?"');
   const caps = listCapabilities().map((c) => c.cap).filter((c) => c.status === "approved" || c.status === "verified");
   if (!caps.length) throw new Error("no verified or approved capabilities in the catalog");
-  const client = new Anthropic();
-  const model = flags.model ?? process.env.HANDS_MODEL ?? "claude-opus-5";
-  const messages: Anthropic.MessageParam[] = [{ role: "user", content: request }];
-  console.log(`agent     ${model} · catalog: ${caps.map((c) => c.name).join(", ")}`);
+  const client = createModelClient({ model: flags.model });
+  const tools = caps.map(toolDefinition).map((t) => ({ name: t.name, description: t.description ?? "", inputSchema: t.input_schema as Record<string, unknown> }));
+  const system = "You are a back-office assistant for a credit union. You can only act through the tools provided, each of which drives a legacy application deterministically. Call a tool when the request needs one; report the structured result plainly, including business outcomes like not-found. Never invent balances.";
+  const turns: Turn[] = [{ role: "user", parts: [{ type: "text", text: request }] }];
+  console.log(`agent     ${client.provider}:${client.model} · catalog: ${caps.map((c) => c.name).join(", ")}`);
   for (let turn = 0; turn < 4; turn++) {
-    const res = await client.messages.create({
-      model, max_tokens: 2000,
-      system: "You are a back-office assistant for a credit union. You can only act through the tools provided, each of which drives a legacy application deterministically. Call a tool when the request needs one; report the structured result plainly, including business outcomes like not-found. Never invent balances.",
-      tools: caps.map(toolDefinition), messages,
-    });
-    messages.push({ role: "assistant", content: res.content });
-    const use = res.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-    if (!use) { console.log("\n" + res.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("\n")); return; }
-    console.log(`\ncalls     ${use.name}(${JSON.stringify(use.input)})`);
-    const result = await cmdReplay(use.name, use.input as Record<string, unknown>, { quiet: true, label: "agent" });
+    const c = await client.complete(system, turns, tools, { maxTokens: 2000 });
+    turns.push({ role: "assistant", text: c.text || undefined, reasoning: c.reasoning, toolUse: c.toolUse, raw: c.raw });
+    if (!c.toolUse) { console.log("\n" + c.text); return; }
+    console.log(`\ncalls     ${c.toolUse.name}(${JSON.stringify(c.toolUse.input)})`);
+    const result = await cmdReplay(c.toolUse.name, c.toolUse.input as Record<string, unknown>, { quiet: true, label: "agent" });
     const summary = { status: result.status, outputs: result.outputs, outcome: result.outcome, failure: result.failure && { class: result.failure.class, message: result.failure.message }, evidence: result.evidenceDir };
     console.log(`returns   ${JSON.stringify(summary)}`);
-    messages.push({ role: "user", content: [{ type: "tool_result", tool_use_id: use.id, content: JSON.stringify(summary) }] });
+    turns.push({ role: "user", parts: [{ type: "tool_result", id: c.toolUse.id, text: JSON.stringify(summary) }] });
   }
 }
 

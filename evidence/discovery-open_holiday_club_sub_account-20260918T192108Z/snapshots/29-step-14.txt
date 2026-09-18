@@ -1,0 +1,25 @@
+frame (top): http://localhost:4100/
+frame "banner": http://localhost:4100/banner
+  - cell "Meridian CoreSuite v7.2.14" [e1]
+  - cell "Operator: operator (Teller) Branch 01 9/18/2026" [e2]
+frame "nav": http://localhost:4100/nav
+  - cell "Menu" [e3]
+  - link "Home" [e4]
+  - link "Member Inquiry" [e5]
+  - link "Transaction Posting" [e6]
+  - link "Reports" [e7]
+  - link "Sign Off" [e8]
+frame "main": http://localhost:4100/member/10077/shares/new
+  - cell "Sub-Account Opened" [e9]
+  - text "Sub-account S21 has been opened for member 10077." [e10]
+  - cell "Confirmation Number" [e11]
+  - cell "CMU7CHSWC" [e12]
+  - cell "Share ID" [e13]
+  - cell "S21" [e14]
+  - cell "Share Type" [e15]
+  - cell "S20 Holiday Club" [e16]
+  - cell "Nickname" [e17]
+  - cell "Vacation" [e18]
+  - cell "Initial Deposit" [e19]
+  - cell "$25.00" [e20]
+  - link "Return to Member Detail" [e21]

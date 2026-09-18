@@ -1,0 +1,763 @@
+{
+  "schemaVersion": "1.0",
+  "id": "cap_open_holiday_club_sub_account",
+  "name": "open_holiday_club_sub_account",
+  "version": 1,
+  "status": "approved",
+  "description": "Open a Holiday Club (S20) sub-account for a member in Meridian CoreSuite with an initial deposit, and return the confirmation number and the new share id.",
+  "app": {
+    "id": "meridian-coresuite",
+    "surface": "legacy-web",
+    "entry": "http://localhost:4100/login"
+  },
+  "inputs": {
+    "memberId": {
+      "type": "string",
+      "description": "Member number, 5 digits",
+      "required": true,
+      "pattern": "^\\d{5}$",
+      "example": "10077",
+      "sensitive": false
+    },
+    "nickname": {
+      "type": "string",
+      "description": "Nickname for the new sub-account, up to 20 characters",
+      "required": true,
+      "pattern": "^.{1,20}$",
+      "example": "Vacation",
+      "sensitive": false
+    },
+    "initialDeposit": {
+      "type": "string",
+      "description": "Initial deposit in dollars, e.g. 25.00 (minimum 5.00)",
+      "required": true,
+      "pattern": "^\\d+(\\.\\d{1,2})?$",
+      "example": "25.00",
+      "sensitive": false
+    }
+  },
+  "outputs": {
+    "confirmationNumber": {
+      "type": "string",
+      "description": "Confirmation number shown on the Sub-Account Opened screen"
+    },
+    "shareId": {
+      "type": "string",
+      "description": "Share id assigned to the new sub-account, e.g. S21"
+    }
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "note": "open the application",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Meridian CoreSuite - Sign On",
+        "frame": []
+      },
+      "timeoutMs": 8000,
+      "action": "navigate",
+      "url": "http://localhost:4100/login"
+    },
+    {
+      "id": "s2",
+      "note": "Operator ID",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Operator ID\"",
+        "frame": [],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Operator ID"
+          },
+          {
+            "kind": "anchor",
+            "text": "Operator ID",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "uid",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "text",
+          "role": "textbox",
+          "name": "Operator ID"
+        }
+      },
+      "value": {
+        "kind": "secret",
+        "name": "MERIDIAN_USER"
+      }
+    },
+    {
+      "id": "s3",
+      "note": "Password",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Password\"",
+        "frame": [],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Password"
+          },
+          {
+            "kind": "anchor",
+            "text": "Password",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "pwd",
+              "type": "password"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "password",
+          "role": "textbox",
+          "name": "Password"
+        }
+      },
+      "value": {
+        "kind": "secret",
+        "name": "MERIDIAN_PASSWORD"
+      }
+    },
+    {
+      "id": "s4",
+      "note": "Sign on",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Welcome",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "button \"Sign On\"",
+        "frame": [],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Sign On"
+          },
+          {
+            "kind": "text",
+            "text": "Sign On",
+            "tag": "input"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(4) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "submit",
+          "role": "button",
+          "name": "Sign On"
+        }
+      }
+    },
+    {
+      "id": "s5",
+      "note": "Member Inquiry",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Member Inquiry",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "link \"Member Inquiry\"",
+        "frame": [
+          "nav"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "link",
+            "name": "Member Inquiry"
+          },
+          {
+            "kind": "text",
+            "text": "Member Inquiry",
+            "tag": "a"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(3) > td > a"
+          }
+        ],
+        "fingerprint": {
+          "tag": "a",
+          "role": "link",
+          "name": "Member Inquiry"
+        }
+      }
+    },
+    {
+      "id": "s6",
+      "note": "Member number",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Member Number\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Member Number"
+          },
+          {
+            "kind": "anchor",
+            "text": "Member Number",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "mbrno",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "text",
+          "role": "textbox",
+          "name": "Member Number"
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "memberId"
+      }
+    },
+    {
+      "id": "s7",
+      "note": "Search",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Member Detail",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "button \"Search\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Search"
+          },
+          {
+            "kind": "text",
+            "text": "Search",
+            "tag": "input"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input:nth-of-type(1)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "submit",
+          "role": "button",
+          "name": "Search"
+        }
+      }
+    },
+    {
+      "id": "s8",
+      "note": "Open Sub-Account",
+      "risk": "safe",
+      "expect": {
+        "kind": "text",
+        "pattern": "Share Type",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "link \"Open Sub-Account\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "link",
+            "name": "Open Sub-Account"
+          },
+          {
+            "kind": "text",
+            "text": "Open Sub-Account",
+            "tag": "a"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > a:nth-of-type(1)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "a",
+          "role": "link",
+          "name": "Open Sub-Account"
+        }
+      }
+    },
+    {
+      "id": "s9",
+      "note": "Share type",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "select",
+      "target": {
+        "describe": "combobox \"Share Type\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "combobox",
+            "name": "Share Type"
+          },
+          {
+            "kind": "anchor",
+            "text": "Share Type",
+            "tag": "select"
+          },
+          {
+            "kind": "attr",
+            "tag": "select",
+            "attrs": {
+              "name": "shtyp"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2) > select"
+          }
+        ],
+        "fingerprint": {
+          "tag": "select",
+          "role": "combobox",
+          "name": "Share Type"
+        }
+      },
+      "value": {
+        "kind": "literal",
+        "value": "S20 Holiday Club"
+      }
+    },
+    {
+      "id": "s10",
+      "note": "Nickname",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Nickname\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Nickname"
+          },
+          {
+            "kind": "anchor",
+            "text": "Nickname",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "nick",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "text",
+          "role": "textbox",
+          "name": "Nickname"
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "nickname"
+      }
+    },
+    {
+      "id": "s11",
+      "note": "Deposit",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "type",
+      "target": {
+        "describe": "textbox \"Initial Deposit\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Initial Deposit"
+          },
+          {
+            "kind": "anchor",
+            "text": "Initial Deposit",
+            "tag": "input"
+          },
+          {
+            "kind": "attr",
+            "tag": "input",
+            "attrs": {
+              "name": "dep",
+              "type": "text"
+            }
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(3) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "text",
+          "role": "textbox",
+          "name": "Initial Deposit"
+        }
+      },
+      "value": {
+        "kind": "param",
+        "name": "initialDeposit"
+      }
+    },
+    {
+      "id": "s12",
+      "note": "Open Account",
+      "risk": "irreversible",
+      "expect": {
+        "kind": "text",
+        "pattern": "Sub-Account Opened",
+        "frame": [
+          "main"
+        ]
+      },
+      "timeoutMs": 8000,
+      "action": "click",
+      "target": {
+        "describe": "button \"Open Account\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "role",
+            "role": "button",
+            "name": "Open Account"
+          },
+          {
+            "kind": "text",
+            "text": "Open Account",
+            "tag": "input"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > table > tbody > tr:nth-of-type(4) > td:nth-of-type(2) > input"
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "type": "submit",
+          "role": "button",
+          "name": "Open Account"
+        }
+      },
+      "dialog": {
+        "type": "confirm",
+        "pattern": "Open a new sub-account for member .+?\\? This will create a live share record and cannot be undone\\.",
+        "respond": "accept"
+      }
+    },
+    {
+      "id": "s13",
+      "note": "read confirmationNumber",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "extract",
+      "target": {
+        "describe": "cell \"CMU7CHSWC\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "anchor",
+            "text": "Confirmation Number",
+            "tag": "td"
+          },
+          {
+            "kind": "text",
+            "text": "CMU7CHSWC",
+            "tag": "td"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > table > tbody > tr:nth-of-type(1) > td:nth-of-type(2)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "td",
+          "role": "cell"
+        }
+      },
+      "output": "confirmationNumber",
+      "parse": "text"
+    },
+    {
+      "id": "s14",
+      "note": "read shareId",
+      "risk": "safe",
+      "timeoutMs": 8000,
+      "action": "extract",
+      "target": {
+        "describe": "cell \"S21\"",
+        "frame": [
+          "main"
+        ],
+        "strategies": [
+          {
+            "kind": "anchor",
+            "text": "Share ID",
+            "tag": "td"
+          },
+          {
+            "kind": "text",
+            "text": "S21",
+            "tag": "td"
+          },
+          {
+            "kind": "css",
+            "selector": "body > table > tbody > tr:nth-of-type(2) > td > table > tbody > tr:nth-of-type(2) > td:nth-of-type(2)"
+          }
+        ],
+        "fingerprint": {
+          "tag": "td",
+          "role": "cell"
+        }
+      },
+      "output": "shareId",
+      "parse": "text"
+    }
+  ],
+  "success": {
+    "kind": "text",
+    "pattern": "Sub-Account Opened"
+  },
+  "outcomes": {
+    "MEMBER_NOT_FOUND": {
+      "description": "No member exists with that member number.",
+      "detect": {
+        "kind": "text",
+        "pattern": "No member found for"
+      }
+    },
+    "DEPOSIT_BELOW_MINIMUM": {
+      "description": "The core rejected the initial deposit as below the product minimum. Nothing was opened.",
+      "detect": {
+        "kind": "text",
+        "pattern": "Initial Deposit must be at least"
+      }
+    },
+    "FORM_REJECTED": {
+      "description": "The core rejected the form (missing share type, bad amount, nickname too long). Nothing was opened.",
+      "detect": {
+        "kind": "text",
+        "pattern": "Share Type is required|must be a dollar amount|20 characters or fewer"
+      }
+    }
+  },
+  "recoveries": [
+    {
+      "id": "session_expired",
+      "description": "The operator session timed out before anything was posted; sign on again and start over.",
+      "detect": {
+        "kind": "text",
+        "pattern": "session has expired"
+      },
+      "action": {
+        "kind": "restart"
+      },
+      "maxAttempts": 1
+    },
+    {
+      "id": "app_error_retry",
+      "description": "The core returned an application error page that says the transaction was not completed. Start over.",
+      "detect": {
+        "kind": "text",
+        "pattern": "An unexpected error occurred"
+      },
+      "action": {
+        "kind": "restart"
+      },
+      "maxAttempts": 2
+    },
+    {
+      "id": "dismiss_system_notice",
+      "description": "Dismiss notice",
+      "detect": {
+        "kind": "visible",
+        "target": {
+          "describe": "dialog \"System Notice\"",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "dialog",
+              "name": "System Notice"
+            },
+            {
+              "kind": "css",
+              "selector": "body > table"
+            }
+          ],
+          "fingerprint": {
+            "tag": "table",
+            "role": "dialog",
+            "name": "System Notice"
+          }
+        }
+      },
+      "action": {
+        "kind": "click",
+        "target": {
+          "describe": "button \"Continue\"",
+          "frame": [
+            "main"
+          ],
+          "strategies": [
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Continue"
+            },
+            {
+              "kind": "text",
+              "text": "Continue",
+              "tag": "input"
+            },
+            {
+              "kind": "css",
+              "selector": "body > table > tbody > tr:nth-of-type(2) > td > form > div > input"
+            }
+          ],
+          "fingerprint": {
+            "tag": "input",
+            "type": "submit",
+            "role": "button",
+            "name": "Continue"
+          }
+        }
+      },
+      "maxAttempts": 2
+    }
+  ],
+  "escalations": [
+    {
+      "id": "permission_denied",
+      "description": "The operator's role cannot open sub-accounts for this member; a supervisor override is required.",
+      "detect": {
+        "kind": "text",
+        "pattern": "supervisor override is required"
+      }
+    }
+  ],
+  "policy": {
+    "effect": "mutating",
+    "irreversibleSteps": [
+      "s12"
+    ]
+  },
+  "provenance": {
+    "discoveredAt": "2026-09-18T19:22:29.106Z",
+    "discoveryRunId": "discovery-open_holiday_club_sub_account-20260918T192108Z",
+    "model": "openrouter:anthropic/claude-opus-5",
+    "surfaceDriver": "playwright-chromium",
+    "evidence": "evidence/discovery-open_holiday_club_sub_account-20260918T192108Z"
+  },
+  "stats": {
+    "replays": 5,
+    "succeeded": 4,
+    "lastReplayAt": "2026-09-18T19:23:36.405Z"
+  }
+}
