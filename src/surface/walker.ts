@@ -106,8 +106,12 @@ export function walkDocument(startIndex: number): RawNode[] {
 
   const isField = (role: string) => ["textbox", "combobox", "checkbox", "radio"].includes(role);
 
-  /** Label-ish text for a field: the cell to its left, else the nearest preceding text in the row or parent. */
-  const anchorFor = (el: Element): string | undefined => {
+  /**
+   * Label-ish text for a control: the cell to its left, else (for fields only) the cell
+   * above in the same column, else the nearest preceding text. A plain cell never anchors
+   * upward: that would make the next row's label share its anchor.
+   */
+  const anchorFor = (el: Element, allowAbove: boolean): string | undefined => {
     const td = el.closest("td");
     if (td) {
       let prev = td.previousElementSibling;
@@ -116,7 +120,7 @@ export function walkDocument(startIndex: number): RawNode[] {
         if (t) return t;
         prev = prev.previousElementSibling;
       }
-      // Fields stacked vertically: header cell in the row above, same column.
+      if (!allowAbove) return undefined;
       const tr = td.parentElement;
       const idx = tr ? Array.from(tr.children).indexOf(td) : -1;
       const above = tr?.previousElementSibling?.children[idx];
@@ -149,7 +153,7 @@ export function walkDocument(startIndex: number): RawNode[] {
       if (wrap && fullText(wrap)) return fullText(wrap);
       const ph = el.getAttribute("placeholder") || el.getAttribute("title");
       if (ph) return norm(ph);
-      return anchorFor(el) ?? norm(el.getAttribute("name"));
+      return anchorFor(el, true) ?? norm(el.getAttribute("name"));
     }
     if (role === "button") {
       const v = (el as HTMLInputElement).value;
@@ -195,7 +199,8 @@ export function walkDocument(startIndex: number): RawNode[] {
     if ((el as HTMLButtonElement).disabled) node.disabled = true;
     // Fields and layout-table cells are read by the label next to them. That label is the
     // most stable handle a legacy screen offers.
-    if (isField(role) || (role === "cell" && !extra.cell)) node.anchor = anchorFor(el);
+    if (isField(role)) node.anchor = anchorFor(el, true);
+    else if (role === "cell" && !extra.cell) node.anchor = anchorFor(el, false);
     const dlg = el.closest('[role="dialog"], dialog');
     if (dlg && dlg !== el) node.dialog = nameFor(dlg, "dialog");
     out.push(node);

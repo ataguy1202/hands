@@ -179,7 +179,10 @@ export async function discover(deps: LoopDeps): Promise<Trace> {
     }
 
     let approved: boolean | undefined;
-    if (verdict.risk === "irreversible" && guard.policy.irreversible.mode === "confirm") {
+    // Accepting the confirm dialog that an already-approved click raised is the same decision, not a second one.
+    const lastRecord = trace.records.at(-1);
+    const alreadyApproved = decision.tool === "dialog" && lastRecord?.kind === "action" && lastRecord.approved === true && !!lastRecord.dialog && !lastRecord.dialogResponse;
+    if (verdict.risk === "irreversible" && guard.policy.irreversible.mode === "confirm" && !alreadyApproved) {
       const it = await control.raise("approval", { reason: `Irreversible action: ${describeAction(action, node, obs.dialog)}`, atStep: `discovery step ${step}`, observation: obs });
       approved = it.resolution === "approved";
       if (!approved) { trace.status = "aborted"; trace.failure = `irreversible action ${it.resolution} by operator at step ${step}`; return trace; }

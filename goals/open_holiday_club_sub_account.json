@@ -1,0 +1,60 @@
+{
+  "name": "open_holiday_club_sub_account",
+  "description": "Open a Holiday Club (S20) sub-account for a member in Meridian CoreSuite with an initial deposit, and return the confirmation number and the new share id.",
+  "goal": "Sign on to Meridian CoreSuite, look up the member by member number, open the Open Sub-Account form from Member Detail, choose Share Type 'S20 Holiday Club', enter the nickname and the initial deposit, press Open Account, accept the confirmation dialog, and reach the Sub-Account Opened confirmation screen. Read the confirmation number and the new share id.",
+  "entry": "http://localhost:4100/login",
+  "app": { "id": "meridian-coresuite", "surface": "legacy-web" },
+  "policy": "policies/meridian-coresuite.json",
+  "inputs": {
+    "memberId": { "type": "string", "description": "Member number, 5 digits", "pattern": "^\\d{5}$", "example": "10077" },
+    "nickname": { "type": "string", "description": "Nickname for the new sub-account, up to 20 characters", "pattern": "^.{1,20}$", "example": "Vacation" },
+    "initialDeposit": { "type": "string", "description": "Initial deposit in dollars, e.g. 25.00 (minimum 5.00)", "pattern": "^\\d+(\\.\\d{1,2})?$", "example": "25.00" }
+  },
+  "outputs": {
+    "confirmationNumber": { "type": "string", "description": "Confirmation number shown on the Sub-Account Opened screen" },
+    "shareId": { "type": "string", "description": "Share id assigned to the new sub-account, e.g. S21" }
+  },
+  "secrets": {
+    "MERIDIAN_USER": "Operator ID for the Sign On screen",
+    "MERIDIAN_PASSWORD": "Operator password for the Sign On screen"
+  },
+  "outcomes": {
+    "MEMBER_NOT_FOUND": {
+      "description": "No member exists with that member number.",
+      "detect": { "kind": "text", "pattern": "No member found for" }
+    },
+    "DEPOSIT_BELOW_MINIMUM": {
+      "description": "The core rejected the initial deposit as below the product minimum. Nothing was opened.",
+      "detect": { "kind": "text", "pattern": "Initial Deposit must be at least" }
+    },
+    "FORM_REJECTED": {
+      "description": "The core rejected the form (missing share type, bad amount, nickname too long). Nothing was opened.",
+      "detect": { "kind": "text", "pattern": "Share Type is required|must be a dollar amount|20 characters or fewer" }
+    }
+  },
+  "recoveries": [
+    {
+      "id": "session_expired",
+      "description": "The operator session timed out before anything was posted; sign on again and start over.",
+      "detect": { "kind": "text", "pattern": "session has expired" },
+      "action": { "kind": "restart" },
+      "maxAttempts": 1
+    },
+    {
+      "id": "app_error_retry",
+      "description": "The core returned an application error page that says the transaction was not completed. Start over.",
+      "detect": { "kind": "text", "pattern": "An unexpected error occurred" },
+      "action": { "kind": "restart" },
+      "maxAttempts": 2
+    }
+  ],
+  "escalations": [
+    {
+      "id": "permission_denied",
+      "description": "The operator's role cannot open sub-accounts for this member; a supervisor override is required.",
+      "detect": { "kind": "text", "pattern": "supervisor override is required" }
+    }
+  ],
+  "discoveryInputs": { "memberId": "10077", "nickname": "Vacation", "initialDeposit": "25.00" },
+  "limits": { "maxSteps": 30, "timeoutMs": 600000 }
+}
