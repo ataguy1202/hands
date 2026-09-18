@@ -1,0 +1,11 @@
+frame (top): http://localhost:4100/
+frame "banner": http://localhost:4100/banner
+  - cell "Meridian CoreSuite v7.2.14" [e1]
+  - cell "Operator: operator (Teller) Branch 01 9/18/2026" [e2]
+frame "nav": http://localhost:4100/nav
+  - cell "Menu" [e3]
+  - link "Home" [e4]
+  - link "Member Inquiry" [e5]
+  - link "Transaction Posting" [e6]
+  - link "Reports" [e7]
+  - link "Sign Off" [e8]

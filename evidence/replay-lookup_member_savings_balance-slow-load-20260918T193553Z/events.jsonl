@@ -1,0 +1,33 @@
+{"seq":1,"at":"2026-09-18T19:35:53.694Z","type":"run.started","capability":"lookup_member_savings_balance","version":1,"status":"approved","inputs":{"memberId":"10077"},"steps":9}
+{"seq":2,"at":"2026-09-18T19:35:53.700Z","type":"step.start","step":"s1","action":"navigate","note":"open the application","attempt":1}
+{"seq":3,"at":"2026-09-18T19:35:55.382Z","type":"act","step":"s1","action":"navigate","ms":1682}
+{"seq":4,"at":"2026-09-18T19:35:55.397Z","type":"checkpoint","step":"s1","ok":true,"expected":"text /Meridian CoreSuite - Sign On/ in frame ","detail":"text matched /Meridian CoreSuite - Sign On/: \"Meridian CoreSuite - Sign On\"","ms":1697}
+{"seq":5,"at":"2026-09-18T19:35:55.403Z","type":"step.start","step":"s2","action":"type","note":"Operator ID","attempt":1}
+{"seq":6,"at":"2026-09-18T19:35:55.403Z","type":"resolve","step":"s2","control":"textbox \"Operator ID\"","via":"role textbox \"Operator ID\"","ref":"e3"}
+{"seq":7,"at":"2026-09-18T19:35:55.594Z","type":"act","step":"s2","action":"type","control":"textbox \"Operator ID\"","value":"{secret MERIDIAN_USER}","ms":191}
+{"seq":8,"at":"2026-09-18T19:35:55.602Z","type":"step.start","step":"s3","action":"type","note":"Password","attempt":1}
+{"seq":9,"at":"2026-09-18T19:35:55.602Z","type":"resolve","step":"s3","control":"textbox \"Password\"","via":"role textbox \"Password\"","ref":"e5"}
+{"seq":10,"at":"2026-09-18T19:35:55.800Z","type":"act","step":"s3","action":"type","control":"textbox \"Password\"","value":"{secret MERIDIAN_PASSWORD}","ms":198}
+{"seq":11,"at":"2026-09-18T19:35:55.807Z","type":"step.start","step":"s4","action":"click","note":"Sign on","attempt":1}
+{"seq":12,"at":"2026-09-18T19:35:55.807Z","type":"resolve","step":"s4","control":"button \"Sign On\"","via":"role button \"Sign On\"","ref":"e8"}
+{"seq":13,"at":"2026-09-18T19:36:01.016Z","type":"act","step":"s4","action":"click","control":"button \"Sign On\"","ms":5209}
+{"seq":14,"at":"2026-09-18T19:36:01.035Z","type":"checkpoint","step":"s4","ok":true,"expected":"text /Welcome/ in frame main","detail":"text matched /Welcome/: \"Welcome\"","ms":5228}
+{"seq":15,"at":"2026-09-18T19:36:01.043Z","type":"step.start","step":"s5","action":"click","note":"Open Member Inquiry","attempt":1}
+{"seq":16,"at":"2026-09-18T19:36:01.044Z","type":"resolve","step":"s5","control":"link \"Member Inquiry\"","via":"role link \"Member Inquiry\"","ref":"e5"}
+{"seq":17,"at":"2026-09-18T19:36:01.725Z","type":"act","step":"s5","action":"click","control":"link \"Member Inquiry\"","ms":681}
+{"seq":18,"at":"2026-09-18T19:36:02.781Z","type":"checkpoint","step":"s5","ok":false,"expected":"text /Member Inquiry/ in frame main","detail":"no visible text matched /Member Inquiry/","ms":1737}
+{"seq":19,"at":"2026-09-18T19:36:02.782Z","type":"step.failed","step":"s5","class":"checkpoint_failed","message":"no visible text matched /Member Inquiry/","expected":"text /Member Inquiry/ in frame main","observed":"System Notice"}
+{"seq":20,"at":"2026-09-18T19:36:02.788Z","type":"recovery","step":"s5","id":"dismiss_system_notice","attempt":1,"detail":"dialog \"System Notice\" visible via role dialog \"System Notice\"","action":"click"}
+{"seq":21,"at":"2026-09-18T19:36:03.454Z","type":"step.start","step":"s5","action":"click","note":"Open Member Inquiry","attempt":2}
+{"seq":22,"at":"2026-09-18T19:36:03.455Z","type":"resolve","step":"s5","control":"link \"Member Inquiry\"","via":"role link \"Member Inquiry\"","ref":"e5"}
+{"seq":23,"at":"2026-09-18T19:36:04.094Z","type":"act","step":"s5","action":"click","control":"link \"Member Inquiry\"","ms":639}
+{"seq":24,"at":"2026-09-18T19:36:04.107Z","type":"checkpoint","step":"s5","ok":false,"expected":"text /Member Inquiry/ in frame main","detail":"no visible text matched /Member Inquiry/","ms":652}
+{"seq":25,"at":"2026-09-18T19:36:04.108Z","type":"step.failed","step":"s5","class":"checkpoint_failed","message":"no visible text matched /Member Inquiry/","expected":"text /Member Inquiry/ in frame main","observed":"System Notice"}
+{"seq":26,"at":"2026-09-18T19:36:04.117Z","type":"recovery","step":"s5","id":"dismiss_system_notice","attempt":2,"detail":"dialog \"System Notice\" visible via role dialog \"System Notice\"","action":"click"}
+{"seq":27,"at":"2026-09-18T19:36:04.769Z","type":"step.start","step":"s5","action":"click","note":"Open Member Inquiry","attempt":3}
+{"seq":28,"at":"2026-09-18T19:36:04.769Z","type":"resolve","step":"s5","control":"link \"Member Inquiry\"","via":"role link \"Member Inquiry\"","ref":"e5"}
+{"seq":29,"at":"2026-09-18T19:36:05.413Z","type":"act","step":"s5","action":"click","control":"link \"Member Inquiry\"","ms":644}
+{"seq":30,"at":"2026-09-18T19:36:13.499Z","type":"checkpoint","step":"s5","ok":false,"expected":"text /Member Inquiry/ in frame main","detail":"no visible text matched /Member Inquiry/","ms":8730}
+{"seq":31,"at":"2026-09-18T19:36:13.500Z","type":"step.failed","step":"s5","class":"checkpoint_failed","message":"no visible text matched /Member Inquiry/","expected":"text /Member Inquiry/ in frame main","observed":"http://localhost:4100/"}
+{"seq":32,"at":"2026-09-18T19:36:13.523Z","type":"failure","class":"checkpoint_failed","atStep":"s5","message":"no visible text matched /Member Inquiry/ (after 3 attempts)","expected":"text /Member Inquiry/ in frame main","observed":"http://localhost:4100/","evidence":{"screenshot":"steps/01-failure-checkpoint-failed.png","snapshot":"snapshots/02-failure-checkpoint-failed.txt","url":"http://localhost:4100/"}}
+{"seq":33,"at":"2026-09-18T19:36:13.524Z","type":"run.finished","status":"failed","failure":"checkpoint_failed","stepsCompleted":4,"recoveries":2,"drift":0,"escalations":0,"durationMs":19949}

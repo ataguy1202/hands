@@ -21,7 +21,7 @@ The design write-up is in [REPORT.md](REPORT.md). Recorded runs, with logs and s
 
 Two capabilities were discovered by Claude Opus 5 against the mock core and then replayed without a model:
 
-- `lookup_member_savings_balance` (read only): discovered in 10 model turns, replayed for other members, for a member that does not exist (a `MEMBER_NOT_FOUND` outcome), through a session expiry and an application error (both recovered by restarting), through an unknown compliance dialog (escalated; an operator cleared it in the live session and handed back), and three times in a row for a stability check.
+- `lookup_member_savings_balance` (read only): discovered in 10 model turns, replayed for other members, for a member that does not exist (a `MEMBER_NOT_FOUND` outcome), through a session expiry and an application error (both recovered by restarting), against a core that answers every request 1.5 s late, through an unknown compliance dialog (escalated; an operator cleared it in the live session and handed back), and three times in a row for a stability check.
 - `open_holiday_club_sub_account` (mutating): discovered in 16 model turns with one approval for the irreversible "Open Account" step, replayed with approval, with a deposit the core rejects (a `DEPOSIT_BELOW_MINIMUM` outcome), with the approval denied, and for a restricted member where a supervisor entered an override in the live session before the run continued.
 - `bin/hands agent` let a model answer a two-part question by calling the first capability twice.
 
@@ -100,6 +100,7 @@ The target exposes `POST /__faults` (denied to the agent by policy) so the inter
 curl -X POST localhost:4100/__faults -d '{"expireSession":true}'      # next request loses the session: recovery, restart
 curl -X POST localhost:4100/__faults -d '{"appErrorOnce":true}'       # next page is an application error: recovery, restart
 curl -X POST localhost:4100/__faults -d '{"complianceDialog":true}'   # an unknown dialog on member pages: escalation, takeover
+curl -X POST localhost:4100/__faults -d '{"slowMs":1500}'             # every response 1.5 s late: waits are explicit, so it just takes longer
 curl -X DELETE localhost:4100/__faults
 ```
 
