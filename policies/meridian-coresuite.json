@@ -1,0 +1,20 @@
+{
+  "id": "meridian-coresuite",
+  "allowedOrigins": ["http://localhost:4100"],
+  "allowedPaths": ["^/$", "^/login$", "^/banner$", "^/nav$", "^/home$", "^/inquiry", "^/member/\\d+", "^/notice/ack$", "^/compliance/attest$"],
+  "deniedPaths": ["^/__faults", "^/logout$", "^/transactions", "^/reports"],
+  "allowedActions": ["navigate", "click", "type", "select", "press", "dialog", "extract"],
+  "irreversible": {
+    "mode": "confirm",
+    "buttonPatterns": ["^open account$", "^post", "transfer", "delete", "close account", "^apply override$"],
+    "dialogPatterns": ["cannot be undone", "are you sure", "will (create|post|transfer|delete)"]
+  },
+  "redaction": {
+    "patterns": {
+      "ssn": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "card": "\\b(?:\\d[ -]?){15,16}\\b"
+    },
+    "secretNames": ["MERIDIAN_PASSWORD"]
+  },
+  "escalation": { "consolePort": 4700, "timeoutMs": 900000 }
+}

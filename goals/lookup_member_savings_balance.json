@@ -1,0 +1,50 @@
+{
+  "name": "lookup_member_savings_balance",
+  "description": "Look up a member by member number in Meridian CoreSuite and read the current balance of their Regular Savings share (S01).",
+  "goal": "Sign on to Meridian CoreSuite, open Member Inquiry, look up the member by member number, and read the member's name and the Current Balance of the S01 Regular Savings share from the Share Accounts table.",
+  "entry": "http://localhost:4100/login",
+  "app": { "id": "meridian-coresuite", "surface": "legacy-web" },
+  "policy": "policies/meridian-coresuite.json",
+  "inputs": {
+    "memberId": { "type": "string", "description": "Member number, 5 digits", "pattern": "^\\d{5}$", "example": "10042" }
+  },
+  "outputs": {
+    "memberName": { "type": "string", "description": "Member name as shown on the Member Detail screen (Last, First M)" },
+    "savingsBalance": { "type": "money", "description": "Current Balance of the S01 Regular Savings share, in USD" }
+  },
+  "secrets": {
+    "MERIDIAN_USER": "Operator ID for the Sign On screen",
+    "MERIDIAN_PASSWORD": "Operator password for the Sign On screen"
+  },
+  "outcomes": {
+    "MEMBER_NOT_FOUND": {
+      "description": "No member exists with that member number.",
+      "detect": { "kind": "text", "pattern": "No member found for" }
+    }
+  },
+  "recoveries": [
+    {
+      "id": "session_expired",
+      "description": "The operator session timed out; sign on again and start over.",
+      "detect": { "kind": "text", "pattern": "session has expired" },
+      "action": { "kind": "restart" },
+      "maxAttempts": 1
+    },
+    {
+      "id": "app_error_retry",
+      "description": "The core returned an application error page that says to try again. Nothing was posted, so start over.",
+      "detect": { "kind": "text", "pattern": "An unexpected error occurred" },
+      "action": { "kind": "restart" },
+      "maxAttempts": 2
+    }
+  ],
+  "escalations": [
+    {
+      "id": "permission_denied",
+      "description": "The operator's role is not authorized for this function; a supervisor has to act.",
+      "detect": { "kind": "text", "pattern": "Permission Denied|supervisor override is required" }
+    }
+  ],
+  "discoveryInputs": { "memberId": "10042" },
+  "limits": { "maxSteps": 25, "timeoutMs": 480000 }
+}
