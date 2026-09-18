@@ -35,14 +35,14 @@ for (const id of runs) {
     bits.push(`${r.stepsCompleted} steps, ${(r.durationMs / 1000).toFixed(1)}s`);
     result = bits.join(" · ");
   }
-  rows.push(`| [${id}](${id}/report.html) | ${what.replace(/\|/g, "\\|")} | ${result.replace(/\|/g, "\\|")} | ${shots} |`);
+  rows.push(`| [${id}](${id}/) | ${what.replace(/\|/g, "\\|")} | ${result.replace(/\|/g, "\\|")} | ${shots} |`);
 }
 
 const md = `# Evidence
 
 Every run below is a real execution against the mock core, recorded by the system itself. Each folder holds \`events.jsonl\` (the structured log), \`steps/\` (screenshots), \`snapshots/\` (the perceived tree at each observation), \`report.html\` (the same log rendered), and for discovery runs \`transcript.json\` (the model's turns, redacted) and \`capability.json\` (what was compiled). Replay runs also carry \`result.json\` and, when a person was involved, \`interventions/\`.
 
-Regenerate this index with \`npx tsx scripts/evidence-index.ts\`.
+\`report.html\` is meant to be opened from a clone; on GitHub, read \`events.jsonl\` and browse \`steps/\` directly. Regenerate this index with \`npx tsx scripts/evidence-index.ts\`.
 
 | run | what | result | shots |
 |---|---|---|---|
