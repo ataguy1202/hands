@@ -1,0 +1,48 @@
+{
+  "runId": "replay-open_holiday_club_sub_account-supervisor-20260918T194144Z",
+  "capability": {
+    "id": "cap_open_holiday_club_sub_account",
+    "name": "open_holiday_club_sub_account",
+    "version": 1
+  },
+  "recoveries": [
+    {
+      "id": "dismiss_system_notice",
+      "atStep": "s5",
+      "attempt": 1
+    }
+  ],
+  "drift": [],
+  "escalations": [
+    {
+      "id": "int_04daea3a",
+      "kind": "takeover",
+      "atStep": "s8",
+      "reason": "The operator's role cannot open sub-accounts for this member; a supervisor override is required. (text matched /supervisor override is required/: \"supervisor override is required\")",
+      "raisedAt": "2026-09-18T19:41:49.865Z",
+      "resolvedAt": "2026-09-18T19:41:51.212Z",
+      "resolution": "retry_step",
+      "humanActions": 5
+    },
+    {
+      "id": "int_c84d0627",
+      "kind": "approval",
+      "atStep": "s12",
+      "reason": "approval for irreversible step",
+      "raisedAt": "2026-09-18T19:41:53.184Z",
+      "resolvedAt": "2026-09-18T19:41:53.337Z",
+      "resolution": "approved",
+      "humanActions": 0
+    }
+  ],
+  "stepsCompleted": 14,
+  "status": "succeeded",
+  "outputs": {
+    "confirmationNumber": "CMU7D76FT",
+    "shareId": "S21"
+  },
+  "startedAt": "2026-09-18T19:41:44.682Z",
+  "finishedAt": "2026-09-18T19:41:54.034Z",
+  "durationMs": 9352,
+  "evidenceDir": "evidence/replay-open_holiday_club_sub_account-supervisor-20260918T194144Z"
+}

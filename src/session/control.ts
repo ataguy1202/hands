@@ -136,7 +136,7 @@ export class ControlPlane {
     } else {
       this.recordHuman({ at: new Date().toISOString(), type: `remote.${action.kind}`, frame: "", detail: action.kind === "navigate" ? action.url : action.kind });
     }
-    await this.surface.act(action.kind === "type" ? { ...action } : action);
+    await this.surface.act(action);
     return this.surface.observe();
   }
 

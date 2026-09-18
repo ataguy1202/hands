@@ -9,7 +9,7 @@
  */
 import type { Capability, Condition, Recovery, Step } from "../schema/capability.js";
 import { renderTemplate } from "../schema/capability.js";
-import type { Failure, FailureClass, ReplayResult } from "../schema/result.js";
+import type { Failure, ReplayResult } from "../schema/result.js";
 import type { Guard } from "../policy/policy.js";
 import type { Redactor } from "../policy/redact.js";
 import type { RunLog } from "../evidence/run.js";
@@ -120,15 +120,16 @@ export async function replay(deps: ReplayDeps): Promise<ReplayResult> {
   };
 
   const applyRecovery = async (rec: Recovery, obs: Observation, step: Step): Promise<Flow | undefined> => {
-    switch (rec.action.kind) {
+    const action = rec.action;
+    switch (action.kind) {
       case "click": {
-        const r = surface.resolve(rec.action.target, obs);
+        const r = surface.resolve(action.target, obs);
         if (!r.ok) return { kind: "failed", failure: { class: "target_not_found", atStep: step.id, message: `recovery "${rec.id}": ${r.detail}` } };
         await surface.act({ kind: "click", ref: r.ref });
         return undefined;
       }
       case "retry_step":
-        await new Promise((r) => setTimeout(r, rec.action.kind === "retry_step" ? rec.action.delayMs : 0));
+        await new Promise((r) => setTimeout(r, action.delayMs));
         return undefined;
       case "restart":
         if (irreversibleDone) return escalate(obs, step, `recovery "${rec.id}" would restart the flow, but an irreversible step has already run`);

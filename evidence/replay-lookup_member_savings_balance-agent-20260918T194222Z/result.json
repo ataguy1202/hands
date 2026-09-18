@@ -1,0 +1,27 @@
+{
+  "runId": "replay-lookup_member_savings_balance-agent-20260918T194222Z",
+  "capability": {
+    "id": "cap_lookup_member_savings_balance",
+    "name": "lookup_member_savings_balance",
+    "version": 1
+  },
+  "recoveries": [
+    {
+      "id": "dismiss_system_notice",
+      "atStep": "s5",
+      "attempt": 1
+    }
+  ],
+  "drift": [],
+  "escalations": [],
+  "stepsCompleted": 9,
+  "status": "succeeded",
+  "outputs": {
+    "memberName": "Reyes, Daniel",
+    "savingsBalance": 12930.55
+  },
+  "startedAt": "2026-09-18T19:42:23.210Z",
+  "finishedAt": "2026-09-18T19:42:27.720Z",
+  "durationMs": 4510,
+  "evidenceDir": "evidence/replay-lookup_member_savings_balance-agent-20260918T194222Z"
+}

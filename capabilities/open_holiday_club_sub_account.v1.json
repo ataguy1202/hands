@@ -756,8 +756,8 @@
     "evidence": "evidence/discovery-open_holiday_club_sub_account-20260918T192108Z"
   },
   "stats": {
-    "replays": 5,
-    "succeeded": 4,
-    "lastReplayAt": "2026-09-18T19:23:36.405Z"
+    "replays": 10,
+    "succeeded": 8,
+    "lastReplayAt": "2026-09-18T19:41:54.034Z"
   }
 }

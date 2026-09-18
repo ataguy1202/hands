@@ -49,6 +49,8 @@ export class WebSurface implements Surface {
   private last?: Observation;
   private pending?: { dialog: Dialog; info: DialogInfo };
   private inflight?: Promise<unknown>;
+  private navigationsInFlight = 0;
+  private lastNavigationAt = 0;
   dialogPolicy: DialogPolicy = () => "hold";
   onHumanEvent?: (e: HumanEvent) => void;
   onDialog?: (info: DialogInfo, decision: "accept" | "dismiss" | "hold") => void;
@@ -63,6 +65,12 @@ export class WebSurface implements Surface {
     await s.context.addInitScript(humanCaptureScript);
     s.page = await s.context.newPage();
     s.page.on("dialog", (d) => s.handleDialog(d));
+    // Navigation requests are tracked so settle() can wait for a slow server instead of
+    // for a load event that already fired on the old document.
+    s.page.on("request", (r) => { if (r.isNavigationRequest()) { s.navigationsInFlight++; s.lastNavigationAt = Date.now(); } });
+    const done = (r: { isNavigationRequest(): boolean }) => { if (r.isNavigationRequest()) s.navigationsInFlight = Math.max(0, s.navigationsInFlight - 1); };
+    s.page.on("requestfinished", done);
+    s.page.on("requestfailed", done);
     return s;
   }
 
@@ -177,7 +185,7 @@ export class WebSurface implements Surface {
     const result = await Promise.race([op.then(() => "done" as const), dialogOpened]);
     stopPolling();
     if (result === "dialog") { this.inflight = op.catch(() => {}); return; }
-    await this.settle();
+    await this.settle(8000, action.kind !== "type" && action.kind !== "select");
   }
 
   private async awaitInflight() {
@@ -186,10 +194,17 @@ export class WebSurface implements Surface {
     await Promise.race([p, new Promise((r) => setTimeout(r, 5000))]);
   }
 
-  /** Let navigations finish and the DOM go quiet. Bounded, and never a fixed sleep. */
-  async settle(maxMs = 4000): Promise<void> {
+  /**
+   * Let navigations finish and the DOM go quiet. Bounded, and never a fixed sleep.
+   * An action gets a short window to issue a navigation request; if one is in
+   * flight (a slow core answering late) we wait for it before reading the screen.
+   */
+  async settle(maxMs = 8000, mayNavigate = true): Promise<void> {
     const deadline = Date.now() + maxMs;
-    await this.page.waitForLoadState("load", { timeout: maxMs }).catch(() => {});
+    const started = Date.now();
+    if (mayNavigate) while (Date.now() - started < 300 && this.navigationsInFlight === 0 && this.lastNavigationAt < started) await sleep(20);
+    while (this.navigationsInFlight > 0 && Date.now() < deadline) await sleep(50);
+    await this.page.waitForLoadState("load", { timeout: Math.max(200, deadline - Date.now()) }).catch(() => {});
     for (const f of this.page.frames()) {
       const left = Math.max(200, deadline - Date.now());
       await f.waitForLoadState("load", { timeout: left }).catch(() => {});
@@ -199,6 +214,8 @@ export class WebSurface implements Surface {
 
   async close() { await this.browser.close().catch(() => {}); }
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * Serialize a self-contained function for page.evaluate. tsx/esbuild injects a

@@ -70,7 +70,7 @@ export type PlannerLike = Pick<Planner, "model" | "transcript"> & {
 };
 
 export async function discover(deps: LoopDeps): Promise<Trace> {
-  const { spec, surface, guard, redactor, log, control, planner } = deps;
+  const { spec, surface, guard, log, control, planner } = deps;
   const trace: Trace = { records: [], escalations: [], status: "failed", steps: 0, usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } };
   const deadline = Date.now() + spec.limits.timeoutMs;
   let policyBlocks = 0;

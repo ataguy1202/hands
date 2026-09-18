@@ -492,8 +492,8 @@
     "evidence": "evidence/discovery-lookup_member_savings_balance-20260918T191807Z"
   },
   "stats": {
-    "replays": 15,
-    "succeeded": 13,
-    "lastReplayAt": "2026-09-18T19:36:13.523Z"
+    "replays": 31,
+    "succeeded": 28,
+    "lastReplayAt": "2026-09-18T19:42:37.884Z"
   }
 }

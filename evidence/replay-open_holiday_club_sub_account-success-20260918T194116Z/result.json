@@ -1,0 +1,38 @@
+{
+  "runId": "replay-open_holiday_club_sub_account-success-20260918T194116Z",
+  "capability": {
+    "id": "cap_open_holiday_club_sub_account",
+    "name": "open_holiday_club_sub_account",
+    "version": 1
+  },
+  "recoveries": [
+    {
+      "id": "dismiss_system_notice",
+      "atStep": "s5",
+      "attempt": 1
+    }
+  ],
+  "drift": [],
+  "escalations": [
+    {
+      "id": "int_ca1ec58e",
+      "kind": "approval",
+      "atStep": "s12",
+      "reason": "approval for irreversible step",
+      "raisedAt": "2026-09-18T19:41:23.605Z",
+      "resolvedAt": "2026-09-18T19:41:23.856Z",
+      "resolution": "approved",
+      "humanActions": 0
+    }
+  ],
+  "stepsCompleted": 14,
+  "status": "succeeded",
+  "outputs": {
+    "confirmationNumber": "CMU7D6JP1",
+    "shareId": "S21"
+  },
+  "startedAt": "2026-09-18T19:41:16.553Z",
+  "finishedAt": "2026-09-18T19:41:24.565Z",
+  "durationMs": 8012,
+  "evidenceDir": "evidence/replay-open_holiday_club_sub_account-success-20260918T194116Z"
+}

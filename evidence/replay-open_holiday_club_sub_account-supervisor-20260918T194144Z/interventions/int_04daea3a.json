@@ -1,0 +1,50 @@
+{
+  "id": "int_04daea3a",
+  "kind": "takeover",
+  "runId": "replay-open_holiday_club_sub_account-supervisor-20260918T194144Z",
+  "capability": "open_holiday_club_sub_account v1",
+  "atStep": "s8",
+  "reason": "The operator's role cannot open sub-accounts for this member; a supervisor override is required. (text matched /supervisor override is required/: \"supervisor override is required\")",
+  "context": {
+    "url": "http://localhost:4100/",
+    "tree": "frame (top): http://localhost:4100/\nframe \"banner\": http://localhost:4100/banner\n  - cell \"Meridian CoreSuite v7.2.14\" [e1]\n  - cell \"Operator: operator (Teller) Branch 01 9/18/2026\" [e2]\nframe \"nav\": http://localhost:4100/nav\n  - cell \"Menu\" [e3]\n  - link \"Home\" [e4]\n  - link \"Member Inquiry\" [e5]\n  - link \"Transaction Posting\" [e6]\n  - link \"Reports\" [e7]\n  - link \"Sign Off\" [e8]\nframe \"main\": http://localhost:4100/member/40001/shares/new\n  - cell \"Permission Denied\" [e9]\n  - text \"Your role (Teller) cannot open sub-accounts for member 40001. A supervisor override is required.\" [e10]\n  - cell \"Supervisor PIN\" [e11]\n  - textbox \"Supervisor PIN\" [e12] (type=password; name=spin)\n  - button \"Apply Override\" [e13]\n  - link \"Back to Member Detail\" [e14]",
+    "screenshot": "steps/01-intervention-int-04daea3a.png"
+  },
+  "raisedAt": "2026-09-18T19:41:49.865Z",
+  "state": "resolved",
+  "humanActions": [
+    {
+      "at": "2026-09-18T19:41:49.886Z",
+      "type": "remote.type",
+      "frame": "main",
+      "detail": "textbox \"Supervisor PIN\""
+    },
+    {
+      "at": "2026-09-18T19:41:50.542Z",
+      "type": "remote.click",
+      "frame": "main",
+      "detail": "button \"Apply Override\""
+    },
+    {
+      "at": "2026-09-18T19:41:50.553Z",
+      "type": "change",
+      "detail": "input[name=spin] value=[redacted 4 chars]",
+      "frame": "main"
+    },
+    {
+      "at": "2026-09-18T19:41:50.554Z",
+      "type": "click",
+      "detail": "button \"Apply Override\"",
+      "frame": "main"
+    },
+    {
+      "at": "2026-09-18T19:41:50.554Z",
+      "type": "submit",
+      "detail": "form \"Supervisor PIN\"",
+      "frame": "main"
+    }
+  ],
+  "takenAt": "2026-09-18T19:41:49.876Z",
+  "resolvedAt": "2026-09-18T19:41:51.212Z",
+  "resolution": "retry_step"
+}

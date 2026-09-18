@@ -136,6 +136,7 @@ bin/hands stability lookup_member_savings_balance --n 5
 ```sh
 npm test
 npm run typecheck
+scripts/record-evidence.sh       # regenerates every replay run under evidence/ from the saved capabilities
 ```
 
 ## Operating notes
