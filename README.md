@@ -5,9 +5,9 @@ The layer that gives an AI agent hands inside software that has no API.
 A model works out how to complete a task in a real UI once. The successful run is compiled into a typed, versioned **capability**: ordered steps, how each control is found, what proves each step took effect, typed inputs and outputs, the business outcomes it can end in, and the runtime conditions it knows how to clear. An agent then invokes that capability by name, and it replays deterministically with no model in the loop. When replay meets something it cannot safely handle, it pauses, hands the live browser session to a person, and resumes when they hand it back.
 
 ```
-goal ──► discovery (LLM drives the UI) ──► capability.json ──► replay (no LLM) ──► result
-                                                                   │
-                                                          stuck? ──► operator takes the live session ──► resumes
+goal ─► discovery (a model drives the UI) ─► capability.json ─► replay (no model) ─► result
+                                                                     │
+                                       stuck? ─► operator takes the live session ─► hands back
 ```
 
 The design write-up is in [REPORT.md](REPORT.md). Recorded runs, with logs and screenshots, are indexed in [evidence/README.md](evidence/README.md).
